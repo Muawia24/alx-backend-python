@@ -12,4 +12,4 @@ def to_kv(k: str, v: Union[int, float]) -> Tuple[str, float]:
     int/float v and should be annotated as a float.
     """
 
-    return (k, v)
+    return (k, v ** 2)
