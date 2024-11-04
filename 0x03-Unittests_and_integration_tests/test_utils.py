@@ -38,13 +38,13 @@ class TestAccessNestedMap(unittest.TestCase):
         with self.assertRaises(expected):
             access_nested_map(nested_map, path)
 
+
 class TestGetJson(unittest.TestCase):
     """ Mock HTTP calls """
     @parameterized.expand([
         ("http://example.com", {"payload": True}),
         ("http://holberton.io", {"payload": False})
     ])
-
     @patch('utils.requests.get')
     def test_get_json(self, url, expected, mock_get):
         """
@@ -76,7 +76,10 @@ class TestMemoize(unittest.TestCase):
 
         instance = TestClass()
 
-        with patch.object(instance, 'a_method', return_value=42) as mock_method:
+        with patch.object(
+                instance,
+                'a_method',
+                return_value=42) as mock_method:
             result1 = instance.a_property
             result2 = instance.a_property
 
@@ -88,4 +91,3 @@ class TestMemoize(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-
