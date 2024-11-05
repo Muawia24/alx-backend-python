@@ -5,7 +5,8 @@
 
 
 import unittest
-from parameterized import parameterized
+from fixtures import TEST_PAYLOAD
+from parameterized import parameterized, parameterized_class
 from utils import get_json
 from client import GithubOrgClient
 from unittest import mock
@@ -82,3 +83,31 @@ class TestGithubOrgClient(unittest.TestCase):
         """
         result = GithubOrgClient.has_license(repo, key)
         self.assertEqual(result, expected)
+
+
+@parameterized_class(
+    ("org_payload", "repos_payload", "expected_repos", "apache2_repos"),
+    TEST_PAYLOAD
+)
+class TestIntegrationGithubOrgClient(unittest.TestCase):
+    """
+     Integration test: fixtures
+    """
+    @classmethod
+    def setUpClass(cls):
+        """
+        Setup class
+        """
+        config = {"return_value.json.side_effect": [
+            cls.org_payload, cls.repos_payload,
+            cls.org_payload, cls.repos_payload
+        ]}
+
+        cls.get_patcher = patch('requests.get', **config)
+        cls.mock = cls.get_patcher.start()
+
+    def tearDownClass(cls):
+        """
+        Run After test and stop patcher
+        """
+        cls.get_patcher.stop()
