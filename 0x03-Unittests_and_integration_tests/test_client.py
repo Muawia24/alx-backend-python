@@ -106,6 +106,31 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
         cls.get_patcher = patch('requests.get', **config)
         cls.mock = cls.get_patcher.start()
 
+    def test_public_repos(self):
+        """
+        Tests GithubOrgClient.public_repos.
+        """
+        test_class = GithubOrgClient('Twitter')
+
+        self.assertEqual(test_class.org, self.org_payload)
+        self.assertEqual(test_class.repos_payload, self.repos_payload)
+        self.assertEqual(test_class.public_repos(), self.expected_repos)
+        self.assertEqual(test_class.public_repos("XLICENSE"), [])
+        self.mock.assert_called()
+
+    def test_public_repos_with_license(self):
+        """
+        Tests the public_repos with the argument license="apache-2.0"
+        """
+        test_class = GithubOrgClient('Twitter')
+
+        self.assertEqual(test_class.public_repos(), self.expected_repos)
+        self.assertEqual(test_class.public_repos("XLICENSE"), [])
+        self.assertEqual(test_class.public_repos(
+            "apache-2.0"), self.apache2_repos)
+        self.mock.assert_called()
+
+    @classmethod
     def tearDownClass(cls):
         """
         Run After test and stop patcher
